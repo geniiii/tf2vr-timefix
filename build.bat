@@ -34,7 +34,7 @@ if "%compiler%"=="clang-cl.exe" (
     set external_flag=/external:I
 )
 
-set compile_flags=%external_flag% ../ext/ /utf-8 /TC /Zc:__STDC__ /std:clatest /nologo /Zi /FC /W4 /wd4100 /wd4701 /GR- /EHsc %MSVC_RUNTIME%
+set compile_flags=%external_flag% ../source/ext/ /utf-8 /TC /Zc:__STDC__ /std:clatest /nologo /Zi /FC /W4 /wd4100 /wd4701 /GR- /EHsc %MSVC_RUNTIME%
 if "%compiler%"=="clang-cl.exe" (
     set compile_flags=%compile_flags% -Wno-missing-braces -Wno-unused-function -Wno-missing-declarations -Wno-unused-parameter -fdiagnostics-absolute-paths -fuse-ld=lld-link
 ) else (
@@ -47,5 +47,5 @@ if not exist build mkdir build
 pushd build
 
 echo Compiling tf2vr_timefix.dll in %build_type% mode...
-%compiler% %build_options% %compile_flags% ../build.c /LD /link %link_flags% /out:tf2vr_timefix.dll
+%compiler% %build_options% %compile_flags% ../source/build.c /LD /link %link_flags% /out:tf2vr_timefix.dll
 popd
