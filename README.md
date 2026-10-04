@@ -10,6 +10,6 @@ This should work for other WMR headsets as well, given they're also affected.
 
 ## Usage
 
-Put the DLL file in `steamapps\\common\\Titanfall2\\TF2VR\\plugins\\`.
+Put the DLL file in `steamapps\common\Titanfall2\TF2VR\plugins\`.
 
-After launching the game, you should see a `tf2vr_timefix.log` file next to the DLL. You can open the log file to see if the plugin is doing anything.
+Upon launching the game, you should see a `tf2vr_timefix.log` file next to the DLL. You can open the log file to see if the plugin is doing anything.
