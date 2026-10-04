@@ -40,7 +40,7 @@ static void LoadHooks(void) {
         return;
     }
 
-    u8* fn = FindUnique(mod, SIMDSC_S8LIT(TARGET_PATTERN));
+    u8* fn = FindUnique(mod, S8Lit(TARGET_PATTERN));
     if (!fn) {
         return;
     }

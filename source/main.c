@@ -1,6 +1,7 @@
 #define PLUGIN_ID_VERSION        "PluginId001"
 #define PLUGIN_CALLBACKS_VERSION "PluginCallbacks001"
-#define PLUGIN_NAME              "TF2VRFIX "
+#define PLUGIN_NAME              "TF2VRFIX"
+#define PLUGIN_LOG_NAME          "TF2VRFIX "
 #define PLUGIN_CONTEXT_CLIENT    0x2
 
 typedef enum {
@@ -40,8 +41,8 @@ typedef struct IPluginCallbacks {
 static const char* GetString(IPluginId* self, PluginString prop) {
     switch (prop) {
         case ID_NAME:
-        case ID_LOG_NAME:
         case ID_DEPENDENCY_NAME: return PLUGIN_NAME;
+        case ID_LOG_NAME: return PLUGIN_LOG_NAME;
         default: return NULL;
     }
 }
@@ -59,26 +60,30 @@ static void RunFrame(IPluginCallbacks* self) {}
 
 static u8 Unload(IPluginCallbacks* self) { return 0; }
 
-static IPluginId plugin_id = {
-    .vftable = &(struct IPluginId_vftable) {.GetString = GetString, .GetField = GetField}
+static struct IPluginId_vftable plugin_id_vftable = {
+    .GetString = GetString,
+    .GetField  = GetField,
 };
 
-static IPluginCallbacks plugin_callbacks = {
-    .vftable = &(struct IPluginCallbacks_vftable) {
-                                                   .Init            = Init,
-                                                   .Finalize        = Finalize,
-                                                   .Unload          = Unload,
-                                                   .OnSqvmCreated   = OnSqvmCreated,
-                                                   .OnSqvmDestroyed = OnSqvmDestroyed,
-                                                   .OnLibraryLoaded = OnLibraryLoaded,
-                                                   .RunFrame        = RunFrame}
+static struct IPluginCallbacks_vftable plugin_callbacks_vftable = {
+    .Init            = Init,
+    .Finalize        = Finalize,
+    .Unload          = Unload,
+    .OnSqvmCreated   = OnSqvmCreated,
+    .OnSqvmDestroyed = OnSqvmDestroyed,
+    .OnLibraryLoaded = OnLibraryLoaded,
+    .RunFrame        = RunFrame,
 };
+
+static IPluginId        plugin_id        = {.vftable = &plugin_id_vftable};
+static IPluginCallbacks plugin_callbacks = {.vftable = &plugin_callbacks_vftable};
 
 __declspec(dllexport) void* CreateInterface(const char* name, InterfaceStatus* status) {
-    void* result = NULL;
-    if (name && !strcmp(name, PLUGIN_ID_VERSION)) {
+    String8 n      = name ? simdsc_string8_from_cstr(name) : (String8) {0};
+    void*   result = NULL;
+    if (S8Equals(n, S8Lit(PLUGIN_ID_VERSION))) {
         result = &plugin_id;
-    } else if (name && !strcmp(name, PLUGIN_CALLBACKS_VERSION)) {
+    } else if (S8Equals(n, S8Lit(PLUGIN_CALLBACKS_VERSION))) {
         result = &plugin_callbacks;
     }
     if (status) {
@@ -88,5 +93,8 @@ __declspec(dllexport) void* CreateInterface(const char* name, InterfaceStatus* s
 }
 
 BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID reserved) {
+    if (reason == DLL_PROCESS_ATTACH) {
+        LogOpen(inst);
+    }
     return 1;
 }
