@@ -1,5 +1,8 @@
 # tf2vr-timefix
 
+> [!IMPORTANT]
+> This has been merged into Titanfall 2 VR as of v1.0.13. You should no longer need this.
+
 Quick and dirty workaround for the "hand motion requires an input timestamp" crash when throwing grenades in Titanfall 2 VR on the HP Reverb G2.  
 This should work for other WMR headsets as well, given they're also affected.
 
